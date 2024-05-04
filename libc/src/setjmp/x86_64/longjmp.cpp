@@ -29,7 +29,8 @@ LLVM_LIBC_FUNCTION(void, longjmp, (__jmp_buf * buf, int val)) {
   // |val| in rax. Note that this has to happen before we restore the registers
   // from values in |buf|. Otherwise, once rsp and rbp are updated, we cannot
   // read |val|.
-  val = val == 0 ? 1 : val;
+  val = val ? val : 1;
+  
   LIBC_INLINE_ASM("mov %1, %0\n\t" : "=r"(rax) : "m"(val) :);
   LIBC_INLINE_ASM("mov %1, %0\n\t" : "=r"(rbx) : "m"(buf->rbx) :);
   LIBC_INLINE_ASM("mov %1, %0\n\t" : "=r"(rbp) : "m"(buf->rbp) :);
